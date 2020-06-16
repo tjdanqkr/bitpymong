@@ -41,28 +41,14 @@ def instar():
     insta = []
     my_db = client['Project']
     mycol = my_db[word]
-        #날짜시작,끝,태그를 뽑고, 워드카운트로 리스트화
-        # my_doc = list(mycol.aggregate([{"$match":{"word":json.get('word')}},{"$unwind": "$wordcount"}, {"$project": {"_id": 0, "word": 0}}, {"$replaceWith": "$wordcount"}]))
-    # my_doc= mycol.find({"word":word,"$or":[{"data":date1},{"data":date2}]},{"_id":0,"tags":1})
     num = json.get('num')
     my_doc1 = mycol.find()
-    
     i=0
     for i in range(int(num)):
         q={data:json.get('date'+str(i))}
         print("a")
         print(q)
-        # date1 ="data:"+date
-        # print(date1)
-        # date ='data :2020-06-08,data:2020-06-09'
-
-        # print(dic)
         my_doc = mycol.find(q,{"_id":0,"tags":1})
-            #my_doc = mycol.find({"data" : "2020-06-08","data":"2020-06-09"}, {"_id": 0, "tags": 1})
-
-            # for result in mycol.find({"data":date}):
-            #     print(result)
-
         for z in my_doc:
             print(z)
             for j in range(len(z['tags'])):
@@ -95,6 +81,21 @@ def mongoTest():
 
     my_doc = list(mycol.find({},{"_id":0}))
 
+    client.close()
+    return jsonify(my_doc)
+
+@app.route("/yearchui",methods=['POST'])
+def yearchui():
+    my_db = client['Project']
+    mycol = my_db['yearchui2020']
+    dong = request.get_json()
+
+    my_doc = list(mycol.find({"행정동명":dong.get("dong")},{"_id":0,"m2019예측":1,"m2020예측":1,"상권_코드_명":1}))
+
+    for i in range(len(my_doc)):
+                    print(i)
+
+    print(my_doc)
     client.close()
     return jsonify(my_doc)
 
